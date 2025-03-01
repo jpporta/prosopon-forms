@@ -12,10 +12,11 @@ func main() {
 	// Component
 
 	e.GET("/", func(c echo.Context) error {
-		component := templates.Hello("Joao")
+		component := templates.Layout()
 		return component.Render(context.Background(), c.Response().Writer)
 
 	})
 	e.Static("/static", "static")
+	e.Static("/css", "css")
 	e.Logger.Fatal(e.Start(":8000"))
 }
