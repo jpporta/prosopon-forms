@@ -1,3 +1,8 @@
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
+
 PACKAGES := $(shell go list ./...)
 name := $(shell basename ${PWD})
 
@@ -57,3 +62,10 @@ css:
 .PHONY: css-watch
 css-watch:
 	tailwindcss -i css/input.css -o css/output.css --watch
+
+.PHONY: migrate-new
+migrate-new:
+	migrate create -ext sql -dir db/migrations -seq $(name)
+
+migrate-push:
+	migrate -path db/migrations -database "postgres://127.0.0.1:$(PGPORT)/$(PGDATABASE)" up

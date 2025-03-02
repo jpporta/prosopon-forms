@@ -1,22 +1,19 @@
 package main
 
 import (
-	"context"
-
-	"github.com/jpporta/prosopon-form/templates"
+	"github.com/jpporta/prosopon-form/internal"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
 	e := echo.New()
-	// Component
-
-	e.GET("/", func(c echo.Context) error {
-		component := templates.Layout()
-		return component.Render(context.Background(), c.Response().Writer)
-
-	})
-	e.Static("/static", "static")
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "method=${method}, uri=${uri}, status=${status}\n",
+	}))
+	e.GET("/api/component", internal.GetComponent)
+	e.POST("/api/login", internal.Login)
+	e.Static("/", "static")
 	e.Static("/css", "css")
 	e.Logger.Fatal(e.Start(":8000"))
 }
